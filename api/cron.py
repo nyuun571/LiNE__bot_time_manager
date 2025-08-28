@@ -1,0 +1,65 @@
+from flask import Flask, request, jsonify
+import requests
+from dotenv import load_dotenv, find_dotenv
+import os
+import hashlib
+import hmac
+import base64
+import json
+from sheet import GoogleSheet
+import datetime as dt
+
+load_dotenv(find_dotenv()) # .envファイルから環境変数を読み込む
+
+app = Flask(__name__)
+
+LINE_ACCESS_TOKEN = os.getenv('CHANNEL_ACCESS_TOKEN')
+LINE_SECRET = os.getenv('CHANNEL_SECRET')
+LINE_API_URL = "https://api.line.me/v2/bot/message/push"
+
+GoogleSheet = GoogleSheet()
+day_of_week = {"月":1, "火":2, "水":3, "木":4, "金":5, "土":6, "日":7 }
+time_schedule = {
+    "08:50":1,
+    "10:35":2,
+    "13:00":3,
+    "14:45":4,
+    "16:30":5,
+    "18:15":6,
+    "20:00":7
+}
+
+def send_push_message(user_id, text):
+    url = "https://api.line.me/v2/bot/message/push"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {LINE_ACCESS_TOKEN}"
+    }
+    data = {
+        "to": user_id.title,
+        "messages": [{"type": "text", "text": text}]
+    }
+    response = requests.post(url, headers=headers, json=data)
+
+
+@app.route("/cron", methods=['POST'])
+def cron():
+    today = dt.date.today()
+    weekday = today.weekday() + 1
+    tz_jst = dt.timezone(dt.timedelta(hours=9))
+    now = dt.datetime.now(tz_jst)
+    now_time = now.strftime('%H:%M')
+    for time, class_num in time_schedule.items():
+        #現在時刻から何限かを確認
+        if (now_time == time):
+            userId_list = GoogleSheet.get_sheet_names()
+            for user_id in userId_list:
+                class_name = GoogleSheet.get_value(user_id.title, weekday + 1, class_num + 1)
+                if class_name:
+                    text = f"{class_name}"
+                    send_push_message(user_id, text)
+                
+
+
+if __name__ == "__main__":
+    app.run()
