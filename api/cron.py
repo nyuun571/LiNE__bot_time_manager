@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+#from flask import Flask, request, jsonify
 import requests
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -11,7 +11,7 @@ import datetime as dt
 
 load_dotenv(find_dotenv()) # .envファイルから環境変数を読み込む
 
-app = Flask(__name__)
+
 
 LINE_ACCESS_TOKEN = os.getenv('CHANNEL_ACCESS_TOKEN')
 LINE_SECRET = os.getenv('CHANNEL_SECRET')
@@ -42,19 +42,20 @@ def send_push_message(user_id, text):
     response = requests.post(url, headers=headers, json=data)
 
 
-@app.route("/cron", methods=['POST'])
+
 def cron():
     today = dt.date.today()
     weekday = today.weekday() + 1
     tz_jst = dt.timezone(dt.timedelta(hours=9))
     now = dt.datetime.now(tz_jst)
     now_time = now.strftime('%H:%M')
+    userId_list = GoogleSheet.get_sheet_names()
     for time, class_num in time_schedule.items():
         #現在時刻から何限かを確認
-        if (now_time == time):
-            userId_list = GoogleSheet.get_sheet_names()
+        if now_time == time:
+            num = class_num
             for user_id in userId_list:
-                class_name = GoogleSheet.get_value(user_id.title, weekday + 1, class_num + 1)
+                class_name = GoogleSheet.get_value(user_id.title, weekday + 1, num + 1)
                 if class_name:
                     text = f"{class_name}"
                     send_push_message(user_id, text)
@@ -62,4 +63,4 @@ def cron():
 
 
 if __name__ == "__main__":
-    app.run()
+    cron()
