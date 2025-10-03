@@ -6,7 +6,7 @@ import hashlib
 import hmac
 import base64
 import json
-from sheet import GoogleSheet
+from .sheet import GoogleSheet
 import datetime as dt
 
 load_dotenv(find_dotenv()) # .envファイルから環境変数を読み込む
