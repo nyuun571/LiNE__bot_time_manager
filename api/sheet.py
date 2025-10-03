@@ -5,9 +5,10 @@ import json
 
 class GoogleSheet:
     def __init__(self):
-        env_value = dotenv_values(".env")  # Load environment variables from .env file
-        self.sheet_id = env_value.get('GOOGLE_SHEET_ID')  # Replace with your default sheet ID if not set
-        self.credentials_str = env_value.get('GOOGLE_SHEETS_CREDENTIALS_JSON')
+        #env_value = dotenv_values(".env")  # Load environment variables from .env file
+        self.sheet_id = os.getenv('GOOGLE_SHEET_ID')  # Replace with your default sheet ID if not set
+        self.credentials_str = os.getenv('GOOGLE_SHEETS_CREDENTIALS_JSON')
+        json_str = self.credentials_str.strip().replace("'", '"')
         self.credentials_json = json.loads(self.credentials_str)  # Parse JSON string to dictionary
         # Define the scope for Google Sheets API
         scopes = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -73,3 +74,4 @@ class GoogleSheet:
             return self.sheet.worksheets()
         except Exception as e:
             return f"Error retrieving sheet names: {str(e)}"
+        
