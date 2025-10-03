@@ -85,8 +85,7 @@ def webhook():
                         period_col = int(period)
                         result = GoogleSheet.edit_value(sheet_name, day_row, period_col, content)
                         reply_message(event["replyToken"], f"{day[0]}曜日の{period}限に「{content}」を追加しました。")
-                    else:
-                        reply_message(event["replyToken"], "編集のフォーマットが正しくありません。")
+                    
                 
                 elif (key in parts[0] for key, value in day_of_week.items()):
                     if len(parts) == 1:
@@ -102,14 +101,9 @@ def webhook():
                         result = GoogleSheet.get_value(sheet_name, day_row, period_col)
                         if result:
                             reply_message(event["replyToken"], f"{result}")
-                        else:
-                            reply_message(event["replyToken"], f"未設定\n設定する場合は、編集 曜日 何限 内容\nと送信してください。")
-                    else:
-                        reply_message(event["replyToken"], "メッセージのフォーマットが正しくありません。")
-                else:
-                    reply_message(event["replyToken"], "メッセージのフォーマットが正しくありません。曜日と時間を指定してください。")
+                        
             if event["type"] == "unfollow":
-                #修正点 unfollowイベントが実行されない
+                #修正点 unfollowイベントが実行されない→UserNameが取得されない→sheetIDをUserIDに変更
                 result = GoogleSheet.delete_sheet(sheet_name)
     return jsonify({"status": "ok"}), 200
 

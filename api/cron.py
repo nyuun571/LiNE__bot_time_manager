@@ -15,14 +15,13 @@ load_dotenv(find_dotenv()) # .envファイルから環境変数を読み込む
 
 LINE_ACCESS_TOKEN = os.getenv('CHANNEL_ACCESS_TOKEN')
 LINE_SECRET = os.getenv('CHANNEL_SECRET')
-LINE_API_URL = "https://api.line.me/v2/bot/message/push"
 
 GoogleSheet = GoogleSheet()
 day_of_week = {"月":1, "火":2, "水":3, "木":4, "金":5, "土":6, "日":7 }
 time_schedule = {
     "08:50":1,
     "10:35":2,
-    "13:00":3,
+    "12:20":3,
     "14:45":4,
     "16:30":5,
     "18:15":6,
