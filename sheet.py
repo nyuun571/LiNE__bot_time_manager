@@ -1,8 +1,9 @@
 import gspread
 import os
-from dotenv import dotenv_values
+from dotenv import dotenv_values, load_dotenv, find_dotenv
 import json
 
+load_dotenv(find_dotenv())
 class GoogleSheet:
     def __init__(self):
         #env_value = dotenv_values(".env")  # Load environment variables from .env file
