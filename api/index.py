@@ -8,7 +8,7 @@ import hmac
 import base64
 import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from sheet import GoogleSheet
+import sheet
 import datetime as dt
 
 load_dotenv(find_dotenv()) # .envファイルから環境変数を読み込む
@@ -19,7 +19,7 @@ LINE_ACCESS_TOKEN = os.getenv('CHANNEL_ACCESS_TOKEN')
 LINE_SECRET = os.getenv('CHANNEL_SECRET')
 LINE_API_URL = "https://api.line.me/v2/bot/message/reply"
 
-GoogleSheet = GoogleSheet()
+GoogleSheet = sheet.GoogleSheet()
 day_of_week = {"月":1, "火":2, "水":3, "木":4, "金":5, "土":6, "日":7 }
 
 
