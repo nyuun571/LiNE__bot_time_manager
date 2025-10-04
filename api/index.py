@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify
 import requests
 from dotenv import load_dotenv, find_dotenv
+import sys
 import os
 import hashlib
 import hmac
 import base64
 import json
-from .sheet import GoogleSheet
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from sheet import GoogleSheet
 import datetime as dt
 
 load_dotenv(find_dotenv()) # .envファイルから環境変数を読み込む
