@@ -85,7 +85,7 @@ def webhook():
                         period, content = parts[2][0], f"{' '.join(parts[3:])}"
                         day_row = day_of_week.get(day[0]) + 1
                         period_col = int(period)
-                        result = GoogleSheet.edit_value(sheet_name, day_row, period_col, content)
+                        result = GoogleSheet.edit_value(sheet_name, day_row, period_col + 1, content)
                         reply_message(event["replyToken"], f"{day[0]}曜日の{period}限に「{content}」を追加しました。")
                     
                 
