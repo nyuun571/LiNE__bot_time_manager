@@ -1,11 +1,12 @@
 #from flask import Flask, request, jsonify
 import requests
 from dotenv import load_dotenv, find_dotenv
-import os
+import os, sys
 import hashlib
 import hmac
 import base64
 import json
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from sheet import GoogleSheet
 import datetime as dt
 
