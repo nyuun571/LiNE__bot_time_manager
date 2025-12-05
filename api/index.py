@@ -85,7 +85,7 @@ def webhook():
                 if "編集" in message_text:
                     if (len(parts) >= 4):
                         day  = "".join(key for key, value in day_of_week.items() if key in  parts[1])
-                        period, content = parts[2][0], f"{' '.join(parts[3:])}"
+                        period, content = parts[2], f"{' '.join(parts[3:])}"
                         day_row = day_of_week.get(day[0]) + 1
                         period_col = int(period)
                         result = GoogleSheet.edit_value(sheet_name, day_row, period_col + 1, content)
