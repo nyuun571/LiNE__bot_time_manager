@@ -72,17 +72,20 @@ def webhook():
                 user_name = get_user_profile(user_id)
                 GoogleSheet.add_sheet(sheet_name, user_name)
                 reply_message(event["replyToken"], 
-                              "【使い方】\n"
-                              "メッセージで「曜日　何限」と送信するとその時間の授業を表示します。\n" 
-                              "「曜日」のみの場合はその曜日の時間割を表示します。\n"
-                              "時間割を作成するには、\n編集　曜日　何限　内容\nと送信してください。\n")
+                            "【使い方】\n"
+                            "iPhoneの場合以下のURLからショートカットを取得し、オートメーションから設定を行ってください\n"
+                            "一日の時間割と1限目〜7限目までの時間に対応した時間割確認ショートカット\n"
+                            "https://www.icloud.com/shortcuts/31d74ccaa5d8498da43a55f59952cf59 \nhttps://www.icloud.com/shortcuts/eeebeef6d4ae4e36b3857c31de380034 \nhttps://www.icloud.com/shortcuts/1a38aed74ab44aa5847608413ebc8290\nhttps://www.icloud.com/shortcuts/9a392f6c6b2e47f0b354b8a626f2daf8 \nhttps://www.icloud.com/shortcuts/2afe40bc875948c9a5ba9fa6b0d85e55\nhttps://www.icloud.com/shortcuts/108ddb2dafdd489aaa1f18c046687a84 \nhttps://www.icloud.com/shortcuts/f0408aad40024f99921d661f76418d59 \nhttps://www.icloud.com/shortcuts/ff4c779149f3439eb87e9b2a6e88cac0 \nhttps://www.icloud.com/shortcuts/31d74ccaa5d8498da43a55f59952cf59\n\n"
+                            "メッセージで「曜日　何限」と送信するとその時間の授業を送信します。\n" 
+                            "「曜日」のみの場合はその曜日の時間割を送信します。\n"
+                            "時間割を作成するには、\n編集　曜日　何限　内容\nと送信してください。\n")
             if event["type"] == "message" and event["message"]["type"] == "text":
                 message_text = event["message"]["text"]
                 parts = message_text.split()
                 if "編集" in message_text:
                     if (len(parts) >= 4):
                         day  = "".join(key for key, value in day_of_week.items() if key in  parts[1])
-                        period, content = parts[2], f"{' '.join(parts[3:])}"
+                        period, content = parts[2][0], f"{' '.join(parts[3:])}"
                         day_row = day_of_week.get(day[0]) + 1
                         period_col = int(period)
                         result = GoogleSheet.edit_value(sheet_name, day_row, period_col + 1, content)
@@ -103,7 +106,9 @@ def webhook():
                         result = GoogleSheet.get_value(sheet_name, day_row, period_col + 1)
                         if result:
                             reply_message(event["replyToken"], f"{result}")
-                        
+
+                    #課題管理機能を追加
+                    
             if event["type"] == "unfollow":
                 #修正点 unfollowイベントが実行されない→UserNameが取得されない→sheetIDをUserIDに変更
                 result = GoogleSheet.delete_sheet(sheet_name)
