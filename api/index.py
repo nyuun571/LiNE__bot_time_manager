@@ -75,7 +75,7 @@ def webhook():
                             "【使い方】\n"
                             "iPhoneの場合以下のURLからショートカットを取得し、オートメーションから設定を行ってください\n"
                             "一日の時間割と1限目〜7限目までの時間に対応した時間割確認ショートカット\n"
-                            "https://www.icloud.com/shortcuts/31d74ccaa5d8498da43a55f59952cf59 \nhttps://www.icloud.com/shortcuts/eeebeef6d4ae4e36b3857c31de380034 \nhttps://www.icloud.com/shortcuts/1a38aed74ab44aa5847608413ebc8290\nhttps://www.icloud.com/shortcuts/9a392f6c6b2e47f0b354b8a626f2daf8 \nhttps://www.icloud.com/shortcuts/2afe40bc875948c9a5ba9fa6b0d85e55\nhttps://www.icloud.com/shortcuts/108ddb2dafdd489aaa1f18c046687a84 \nhttps://www.icloud.com/shortcuts/f0408aad40024f99921d661f76418d59 \nhttps://www.icloud.com/shortcuts/ff4c779149f3439eb87e9b2a6e88cac0 \nhttps://www.icloud.com/shortcuts/31d74ccaa5d8498da43a55f59952cf59\n\n"
+                            "https://www.icloud.com/shortcuts/885ac941f5c6432eb609459cc4ddb43c \nhttps://www.icloud.com/shortcuts/3d63f7436c344685989cfbc6b87fad62 \nhttps://www.icloud.com/shortcuts/ee2d5b2f83da4504a153bb9171b2f0c2 \nhttps://www.icloud.com/shortcuts/8e68a471f6314049b771ee3f3ed25302 \nhttps://www.icloud.com/shortcuts/88f30703c217474394a386a7986623d1 \nhttps://www.icloud.com/shortcuts/ecd2738505a54618afb23ef02f9201b2 \nhttps://www.icloud.com/shortcuts/a377952c2c594a33833d7f8addafafb7 \nhttps://www.icloud.com/shortcuts/14fed816dcf8497c967f5123f45ffad3 \n\n"
                             "メッセージで「曜日　何限」と送信するとその時間の授業を送信します。\n" 
                             "「曜日」のみの場合はその曜日の時間割を送信します。\n"
                             "時間割を作成するには、\n編集　曜日　何限　内容\nと送信してください。\n")
@@ -86,11 +86,13 @@ def webhook():
                     if (len(parts) >= 4):
                         day  = "".join(key for key, value in day_of_week.items() if key in  parts[1])
                         period, content = parts[2], f"{' '.join(parts[3:])}"
-                        day_row = day_of_week.get(day[0]) + 1
-                        period_col = int(period)
-                        result = GoogleSheet.edit_value(sheet_name, day_row, period_col + 1, content)
-                        reply_message(event["replyToken"], f"{day[0]}曜日の{period}限に「{content}」を追加しました。")
-                    
+                        if(period <= 7):
+                            day_row = day_of_week.get(day[0]) + 1
+                            period_col = int(period)
+                            result = GoogleSheet.edit_value(sheet_name, day_row, period_col + 1, content)
+                            reply_message(event["replyToken"], f"{day[0]}曜日の{period}限に「{content}」を追加しました。")
+                        else:
+                            reply_message(event["replyToken"], "何限は1〜7の間で指定してください。")
                 
                 elif (key in parts[0] for key, value in day_of_week.items()):
                     if len(parts) == 1:
@@ -103,10 +105,12 @@ def webhook():
                         period = parts[1]
                         day_row = day_of_week.get(day[0]) + 1
                         period_col = int(period)
-                        result = GoogleSheet.get_value(sheet_name, day_row, period_col + 1)
-                        if result:
-                            reply_message(event["replyToken"], f"{result}")
-
+                        if(period <= 7):
+                            result = GoogleSheet.get_value(sheet_name, day_row, period_col + 1)
+                            if result:
+                                reply_message(event["replyToken"], f"{result}")
+                        else:
+                            reply_message(event["replyToken"], "何限は1〜7の間で指定してください。")
                     #課題管理機能を追加
                     
             if event["type"] == "unfollow":
