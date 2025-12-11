@@ -88,9 +88,11 @@ def webhook():
                         period, content = parts[2], f"{' '.join(parts[3:])}"
                         day_row = day_of_week.get(day[0]) + 1
                         period_col = int(period)
-                        result = GoogleSheet.edit_value(sheet_name, day_row, period_col + 1, content)
-                        reply_message(event["replyToken"], f"{day[0]}曜日の{period}限に「{content}」を追加しました。")
-                    
+                        if(period_col >= 1 and period_col <=7):
+                            result = GoogleSheet.edit_value(sheet_name, day_row, period_col + 1, content)
+                            reply_message(event["replyToken"], f"{day[0]}曜日の{period}限に「{content}」を追加しました。")
+                        else:
+                            reply_message(event["replyToken"], "何限は1〜7の数字で指定してください。")
                 
                 elif (key in parts[0] for key, value in day_of_week.items()):
                     if len(parts) == 1:
@@ -103,10 +105,13 @@ def webhook():
                         period = parts[1]
                         day_row = day_of_week.get(day[0]) + 1
                         period_col = int(period)
-                        result = GoogleSheet.get_value(sheet_name, day_row, period_col + 1)
-                        if result:
-                            reply_message(event["replyToken"], f"{result}")
-
+                        if(period_col >= 1 and period_col <=7):
+                            result = GoogleSheet.get_value(sheet_name, day_row, period_col + 1)
+                            if result:
+                                reply_message(event["replyToken"], f"{result}")
+                        else:
+                            reply_message(event["replyToken"], "何限は1〜7の数字で指定してください。")
+    
                     #課題管理機能を追加
                     
             if event["type"] == "unfollow":
