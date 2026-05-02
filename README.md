@@ -1,4 +1,4 @@
-# LINEとGoogle spreadsheetを使ったタスク管理
+# LINEとGoogle spreadsheetを使った時間割・タスク管理
 
 cron.pyをラズベリーパイなどのcronjobとして設定することで、特定の時間に送信することができる。
 そういったものがなくてもiPhoneのショートカットを使うことで、同様のことが行える。
